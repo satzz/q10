@@ -2,10 +2,9 @@ CREATE TABLE phase_transition (
        phase_transition_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
        trial_id INTEGER NOT NULL,
        trial_type VARCHAR(16) NOT NULL,
-       i_to_n FLOAT NOT NULL,
-       n_to_cry FLOAT NOT NULL,
-       n_to_b4 FLOAT NOT NULL
+       date DATE,
 );
+
 
 CREATE TABLE microscope_photo (
        photo_name VARCHAR(32) NOT NULL PRIMARY KEY,
@@ -16,8 +15,24 @@ CREATE TABLE microscope_photo (
 CREATE TABLE microscope_trial (
        microscope_trial_id INTEGER NOT NULL PRIMARY KEY,
        cell_id INTEGER NOT NULL,
-       date DATE NOT NULL
+       date DATE NOT NULL,
+       i_to_n FLOAT,
+       n_to_cry FLOAT,
+       n_to_b4 FLOAT
 );
+
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (1,  1,  '2008-12-08', 151.9, 74.7, 103.0);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (2,  2,  '2008-12-08', 145.0, 76.5, 110.8);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (3,  3,  '2008-12-09', 160.6, 80.0, NULL);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (4,  4,  '2008-12-16', 158.8, 75.7, 57.5);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (5,  1,  '2009-01-03', 150.7, 76.4, 89.2);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (6,  10, '2009-01-03', 156.3, 74.5, 72.5);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (7,  9,  '2009-01-03', 152.9, 76.7, 96.8);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (8,  6,  '2009-01-05', 159,   78.2, 66.2);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (9,  7,  '2009-01-05', 154.5, 80.4, 95.0);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (10, 8,  '2009-01-05', 154.3, 76.1, 71.0);
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (11, 11, '2009-01-05', 150.4, 76.9, 87.9);
+
 
 CREATE TABLE dls_photo (
        photo_name VARCHAR(32) NOT NULL PRIMARY KEY,
