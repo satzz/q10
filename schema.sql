@@ -1,11 +1,3 @@
-CREATE TABLE phase_transition (
-       phase_transition_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
-       trial_id INTEGER NOT NULL,
-       trial_type VARCHAR(16) NOT NULL,
-       date DATE,
-);
-
-
 CREATE TABLE microscope_photo (
        photo_name VARCHAR(32) NOT NULL PRIMARY KEY,
        microscope_trial_id INTEGER NOT NULL,
