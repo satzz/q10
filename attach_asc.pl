@@ -100,7 +100,10 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
         my $tau = Q10::Gnuplot->get_param(
             fit_file_name   => $fit_file_name,
             log_file_name   => $log_file_name,
-            statement       => qq{fit y_0 + A * exp((x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta},
+            statement       => qq{
+set xrange [0.01:1]
+fit y_0 + A * exp((x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta
+},
             param_file_name => $param_file_name,
             param           => 'tau',
         );
