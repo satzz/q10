@@ -21,7 +21,6 @@ my $graph_html;
 for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
     $day or next;
-#     $day == 29 or next;
     my $date_dir = $asc_dir->subdir($date);
     for my $asc_file_name (sort grep {/ASC/} $date_dir->open->read) {
         warn sprintf '%s', $date_dir->file($asc_file_name);
@@ -33,6 +32,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
         my @correlation, my @count_rate;
         my $count_rate_max = 0;
         my $count_rate_min = 4000;
+        my $correlation_max = 0;
         my $line_index = 0;
         while (my $line = <$io>) {
             $line_index++;
@@ -45,10 +45,13 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
                 next;
             }
             my ($time, $val) = $line =~ /([.\dE\-]+)\s+([.\dE\-]+)/;
-#             warn sprintf "%s\t%s\t%s\t%s", $line_index, $flag, $time, $line;
             if ($flag == 1) {
-                defined $time or $flag = 2;
-                push @correlation, sprintf "%s\t%s\n", $time, $val;
+                if (defined $time) {
+                    push @correlation, sprintf "%s\t%s\n", $time, $val;
+                    $correlation_max = $val if $correlation_max < $val;
+                } else {
+                    $flag = 2;
+                }
             } elsif ($flag == 3) {
                 defined $time or last;
                 push @count_rate, sprintf "%s\t%s\n", $time, $val;
@@ -87,6 +90,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
         my $count_rate_title = '';
         $correlation_plt_file->print (<<EOD);
 set term postscript
+set yrange[0:$correlation_max]
 set logscale x
 set key outside
 set output '$correlation_ps_file_name'
