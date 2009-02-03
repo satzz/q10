@@ -13,11 +13,13 @@ my $plt_dir = dir($Bin, qw/ graph plt /);
 my $ps_dir  = dir($Bin, qw/ graph ps /);
 my $img_dir = dir($Bin, qw/ graph img /);
 my $param_dir = dir($Bin, qw/ graph param /);
+my $log_dir = dir($Bin, qw/ graph log /);
 moco('DLSTrial')->retrieve_all->each(sub {$_->delete});
 unlink $dat_dir->file($_) for grep {/dat/} $dat_dir->open->read;
 unlink $plt_dir->file($_) for grep {/plt/} $plt_dir->open->read;
 unlink $ps_dir->file($_) for grep {/ps/} $ps_dir->open->read;
 unlink $param_dir->file($_) for grep {/txt/} $param_dir->open->read;
+unlink $log_dir->file($_) for grep {/txt/} $log_dir->open->read;
 my $asc_dir = dir($Bin, qw/ DLS  asc /);
 my $graph_html;
 for my $date (sort grep {/\d+/} $asc_dir->open->read) {
@@ -84,6 +86,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
         my $count_rate_img_file_name  = $img_dir->file(sprintf 'count_rate_dls_%s.png', $dls_trial_id);
         my $param_file_name           = $param_dir->file(sprintf 'count_rate_param_%s.txt', $dls_trial_id);
         my $fit_file_name             = $plt_dir->file(sprintf 'fit_dls_%s.plt', $dls_trial_id);
+        my $log_file_name             = $log_dir->file(sprintf 'fit_log_%s.txt', $dls_trial_id);
         my $correlation_dat_file      = IO::File->new($correlation_dat_file_name, 'w');
         my $count_rate_dat_file       = IO::File->new($count_rate_dat_file_name, 'w');
         my $correlation_plt_file      = IO::File->new($correlation_plt_file_name, 'w');
@@ -93,9 +96,11 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
 
         my $correlation_title = '';
         my $count_rate_title = '';
+        warn $log_file_name;
         my $tau = Q10::Gnuplot->get_param(
             fit_file_name   => $fit_file_name,
-            target          => qq{fit y_0 + A * exp((x/tau)** b) '$correlation_dat_file_name' via y_0, A, tau, b},
+            log_file_name   => $log_file_name,
+            statement       => qq{fit y_0 + A * exp((x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta},
             param_file_name => $param_file_name,
             param           => 'tau',
         );
