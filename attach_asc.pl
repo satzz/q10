@@ -22,6 +22,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     $day or next;
     my $date_dir = $asc_dir->subdir($date);
     for my $asc_file_name (sort grep {/ASC/} $date_dir->open->read) {
+        warn sprintf '%s', $date_dir->file($asc_file_name);
         my $asc = $date_dir->file($asc_file_name);
         my ($cell_id, $rotation_angle, $sample_angle, $laser_position, $nd_filter_position, $polarizer_angle, $sample_position, $temperture) =
             $asc_file_name =~ /cell(\d+)_(\d+)_(\d+)_(\d+)_(\d+)_(\d+)_(\d+)_(\d+)[.]ASC/;
