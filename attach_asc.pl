@@ -20,6 +20,7 @@ my $asc_dir = dir($Bin, qw/ DLS  asc /);
 for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
     $day or next;
+#     $day == 29 or next;
     my $date_dir = $asc_dir->subdir($date);
     for my $asc_file_name (sort grep {/ASC/} $date_dir->open->read) {
         warn sprintf '%s', $date_dir->file($asc_file_name);
@@ -31,7 +32,9 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
         my @correlation, my @count_rate;
         my $count_rate_max = 0;
         my $count_rate_min = 4000;
+        my $line_index = 0;
         while (my $line = <$io>) {
+            $line_index++;
             chomp $line;
             if ($line =~ /Correlation/) {
                 $flag = 1;
@@ -40,12 +43,13 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
                 $flag = 3;
                 next;
             }
-            my ($time, $val) = grep {defined $_} split /\s+/, $line;
+            my ($time, $val) = $line =~ /([.\dE\-]+)\s+([.\dE\-]+)/;
+#             warn sprintf "%s\t%s\t%s\t%s", $line_index, $flag, $time, $line;
             if ($flag == 1) {
-                $time or $flag = 2;
+                defined $time or $flag = 2;
                 push @correlation, sprintf "%s\t%s\n", $time, $val;
             } elsif ($flag == 3) {
-                $time or last;
+                defined $time or last;
                 push @count_rate, sprintf "%s\t%s\n", $time, $val;
                 $count_rate_max = $val if $count_rate_max < $val;
                 $count_rate_min = $val if $count_rate_min > $val;
@@ -65,11 +69,13 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
         );
         my $dls_trial_id = $dls_trial->dls_trial_id;
         my $correlation_dat_file_name = $dat_dir->file(sprintf 'correlation_dls_%s.dat', $dls_trial_id);
-        my $count_rate_dat_file_name = $dat_dir->file(sprintf 'count_rate_dls_%s.dat', $dls_trial_id);
-        my $correlation_dat_file = IO::File->new($correlation_dat_file_name, 'w');
-        my $count_rate_dat_file  = IO::File->new($count_rate_dat_file_name, 'w');
-        my $correlation_plt_file = IO::File->new($plt_dir->file(sprintf 'correlation_dls_%s.plt', $dls_trial_id), 'w');
-        my $count_rate_plt_file  = IO::File->new($plt_dir->file(sprintf 'count_rate_dls_%s.plt', $dls_trial_id), 'w');
+        my $count_rate_dat_file_name  = $dat_dir->file(sprintf 'count_rate_dls_%s.dat', $dls_trial_id);
+        my $correlation_plt_file_name = $plt_dir->file(sprintf 'correlation_dls_%s.plt', $dls_trial_id);
+        my $count_rate_plt_file_name  = $plt_dir->file(sprintf 'count_rate_dls_%s.plt', $dls_trial_id);
+        my $correlation_dat_file      = IO::File->new($correlation_dat_file_name, 'w');
+        my $count_rate_dat_file       = IO::File->new($count_rate_dat_file_name, 'w');
+        my $correlation_plt_file      = IO::File->new($correlation_plt_file_name, 'w');
+        my $count_rate_plt_file       = IO::File->new($count_rate_plt_file_name, 'w');
         $correlation_dat_file->print (join '', @correlation);
         $count_rate_dat_file->print (join '', @count_rate);
         my $correlation_ps_file_name =  $ps_dir->file(sprintf 'correlation_dls_%s.ps', $dls_trial_id);
@@ -88,8 +94,11 @@ EOD
         $count_rate_dat_file->close;
         $correlation_plt_file->close;
         $count_rate_plt_file->close;
-        Q10::Gnuplot->run($correlation_dat_file_name);
-        Q10::Gnuplot->run($count_rate_dat_file_name);
+        Q10::Gnuplot->run($correlation_plt_file_name);
+#         Q10::Gnuplot->convert($correlation_ps_file_name, $correlation_img_file_name);
+        Q10::Gnuplot->run($count_rate_plt_file_name);
+#         Q10::Gnuplot->convert($count_rate_ps_file_name, $count_rate_img_file_name);
+        last;
     }
 }
 
