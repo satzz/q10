@@ -13,13 +13,9 @@ my $plt_dir = dir($Bin, qw/ graph plt /);
 my $ps_dir  = dir($Bin, qw/ graph ps /);
 my $img_dir = dir($Bin, qw/ graph img /);
 moco('DLSTrial')->retrieve_all->each(sub {$_->delete});
-my @dat_file = grep {/dat/} $dat_dir->open->read;
-my @plt_file = grep {/plt/} $plt_dir->open->read;
-my @ps_file = grep {/ps/} $ps_dir->open->read;
-my @img_file = $img_dir->open->read;
-system qq{cd $dat_dir; rm $_} for @dat_file;
-system qq{cd $plt_dir; rm $_} for @plt_file;
-system qq{cd $ps_dir; rm $_} for @ps_file;
+unlink $dat_dir->file($_) for grep {/dat/} $dat_dir->open->read;
+unlink $plt_dir->file($_) for grep {/plt/} $plt_dir->open->read;
+unlink $ps_dir->file($_) for grep {/ps/} $ps_dir->open->read;
 my $asc_dir = dir($Bin, qw/ DLS  asc /);
 for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
@@ -27,7 +23,6 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     my $date_dir = $asc_dir->subdir($date);
     for my $asc_file_name (sort grep {/ASC/} $date_dir->open->read) {
         my $asc = $date_dir->file($asc_file_name);
-        warn $asc_file_name;
         my ($cell_id, $rotation_angle, $sample_angle, $laser_position, $nd_filter_position, $polarizer_angle, $sample_position, $temperture) =
             $asc_file_name =~ /cell(\d+)_(\d+)_(\d+)_(\d+)_(\d+)_(\d+)_(\d+)_(\d+)[.]ASC/;
         my $io = IO::File->new($asc);
@@ -44,7 +39,6 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
                 $flag = 3;
                 next;
             }
-#             warn $line;
             my ($time, $val) = grep {defined $_} split /\s+/, $line;
             if ($flag == 1) {
                 $time or $flag = 2;
