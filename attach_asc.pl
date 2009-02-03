@@ -115,7 +115,7 @@ EOD
     }
 }
 
-my $graph_html_file = IO::File->new(dir($Bin)->file('graph.html'), 'w');
+my $graph_html_file = IO::File->new(dir($Bin, 'html')->file('dls.html'), 'w');
 $graph_html_file->print($graph_html);
 $graph_html_file->close;
 
