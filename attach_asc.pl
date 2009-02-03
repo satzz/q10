@@ -96,7 +96,6 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
 
         my $correlation_title = '';
         my $count_rate_title = '';
-        warn $log_file_name;
         my $tau = Q10::Gnuplot->get_param(
             fit_file_name   => $fit_file_name,
             log_file_name   => $log_file_name,
