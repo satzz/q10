@@ -26,7 +26,7 @@ my $graph_html;
 for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
     $day or next;
-    $day == 29 or next;
+#     $day == 29 or next;
     my $date_dir = $asc_dir->subdir($date);
     for my $asc_file_name (sort grep {/ASC/} $date_dir->open->read) {
         warn sprintf '%s', $date_dir->file($asc_file_name);
