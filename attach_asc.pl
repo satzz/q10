@@ -14,7 +14,8 @@ my $ps_dir  = dir($Bin, qw/ graph ps /);
 my $img_dir = dir($Bin, qw/ graph img /);
 my $param_dir = dir($Bin, qw/ graph param /);
 my $log_dir = dir($Bin, qw/ graph log /);
-moco('DLSTrial')->retrieve_all->each(sub {$_->delete});
+my $all_dls_trial = moco('DLSTrial')->retrieve_all;
+$all_dls_trial->each(sub {$_->delete});
 unlink $dat_dir->file($_) for grep {/dat/} $dat_dir->open->read;
 unlink $plt_dir->file($_) for grep {/plt/} $plt_dir->open->read;
 unlink $ps_dir->file($_) for grep {/ps/} $ps_dir->open->read;
@@ -103,7 +104,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
             log_file_name   => $log_file_name,
             statement       => qq{
 set xrange [0.01:1]
-fit y_0 + A * exp((x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta
+fit y_0 + A * exp(-(x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta
 },
             param_file_name => $param_file_name,
             param           => 'tau',
