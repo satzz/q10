@@ -29,7 +29,7 @@ sub p8_ratio {
 
 sub k {
     my $lambda = 532;
-    4 * 3.14 / $lambda *sin (shift->rotation_angle * 0.003 /2);
+    4 * 3.14 / $lambda * sin (shift->rotation_angle * 0.003 /2 * 3.14 /180);
 }
 
 1;
