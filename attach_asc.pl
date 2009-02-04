@@ -107,8 +107,8 @@ set xrange [0.01:1]
 fit y_0 + A * exp(-(x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta
 },
             param_file_name => $param_file_name,
-            param           => 'tau',
-        );
+            param           => [qw/tau/],
+        )->{tau};
         $dls_trial->relaxation_time($tau);
         $correlation_plt_file->print (<<EOD);
 set term postscript
