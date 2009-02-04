@@ -19,7 +19,7 @@ my $html = '';
 {
     my $chunk = {};
     for my $dls_trial (moco('DLSTrial')->retrieve_all) {
-        $dls_trial->date eq '2009-01-29' or next;
+#         $dls_trial->date eq '2009-01-29' or next;
         my $temperture = $dls_trial->temperture;
         my $p8_ratio = $dls_trial->p8_ratio;
         $chunk->{$temperture} ||= {};
@@ -40,6 +40,7 @@ my $html = '';
         my $plot;
         my $index = 0;
         for my $p8_ratio (sort {$a <=> $b} keys %$small_chunk) {
+            $out .= sprintf "# %s%% P8\n", $p8_ratio;
             push @plot, sprintf qq{'%s' ind %s t '%s%% P8'}, $dat_file_name, $index, $p8_ratio;
             for (sort {$a->[0] <=> $b->[0]} map {[$_->k, $_]} @{$small_chunk->{$p8_ratio}}) {
                 my $k = $_->[0];
@@ -47,7 +48,7 @@ my $html = '';
                 my $relaxation_time = $dls_trial->relaxation_time or next;
                 $out .= sprintf "%s\t%s\n", $k, 1/$relaxation_time;
             }
-            $out .= "\n";
+            $out .= "\n\n";
             $index++;
         }
         $plot = join ',', @plot;
