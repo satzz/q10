@@ -1,3 +1,11 @@
+CREATE TABLE temperture_p8_ratio (
+       temperture INTEGER NOT NULL,
+       p8_ratio FLOAT NOT NULL,
+       a FLOAT NOT NULL,
+       b FLOAT NOT NULL,
+       key (temperture, p8_ratio)
+);
+
 CREATE TABLE microscope_photo (
        photo_name VARCHAR(32) NOT NULL PRIMARY KEY,
        microscope_trial_id INTEGER NOT NULL,
