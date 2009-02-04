@@ -27,7 +27,7 @@ my $html_dir = dir($Bin, qw/ html /);
         push @{$chunk->{$temperture}->{$p8_ratio}}, $dls_trial;
     }
 
-    for my $temperture (sort {$a <=> $b} keys %$chunk) {
+    for my $temperture (sort {$b <=> $a} keys %$chunk) {
         my $small_chunk = $chunk->{$temperture};
         my $out = '';
         my $dat_file_name = $dat_dir->file(sprintf 'temperture_%s.dat', $temperture);
@@ -43,7 +43,6 @@ my $html_dir = dir($Bin, qw/ html /);
             push @plot, sprintf qq{'%s' ind %s t '%s%% P8'}, $dat_file_name, $index, $p8_ratio;
             for (sort {$a->[0] <=> $b->[0]} map {[$_->k, $_]} @{$small_chunk->{$p8_ratio}}) {
                 my $k = $_->[0];
-                warn $k;
                 my $dls_trial = $_->[1];
                 my $relaxation_time = $dls_trial->relaxation_time or next;
                 $out .= sprintf "%s\t%s\n", $k, 1/$relaxation_time;
@@ -58,13 +57,18 @@ my $html_dir = dir($Bin, qw/ html /);
         $out = qq{
 set term postscript
 set key outside
+set xlabel 'k[/nm]'
+set ylabel '1/relaxation time[/ms]'
+set xrange [0.004:0.01]
+set logscale x
+set logscale y
 set output '$ps_file_name'
 plot $plot
         };
         $plt_file->print($out);
         Q10::Gnuplot->run($plt_file_name);
         Q10::Gnuplot->convert($ps_file_name, $img_file_name);
-        $html .= sprintf qq{<h3>temperture: %s</h3><img src="%s" />}, $temperture, $img_file_name;
+        $html .= sprintf qq{<h3>temperture: %s deg C</h3><img src="%s" />}, $temperture/10, $img_file_name;
     }
     $html_file->print($html);
     $html_file->close;
