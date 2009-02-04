@@ -25,6 +25,7 @@ my $graph_html;
 for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
     $day or next;
+    $day == 29 or next;
     my $date_dir = $asc_dir->subdir($date);
     for my $asc_file_name (sort grep {/ASC/} $date_dir->open->read) {
         warn sprintf '%s', $date_dir->file($asc_file_name);
@@ -67,6 +68,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
             cell_id             => $cell_id,
             date                => (sprintf '20%s-%s-%s', $year, $month, $day),
             temperture          => $temperture,
+            rotation_angle      => $rotation_angle,
             sample_angle        => $sample_angle,
             laser_position      => $laser_position,
             nd_filter_position  => $nd_filter_position,
