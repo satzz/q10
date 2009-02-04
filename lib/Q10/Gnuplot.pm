@@ -36,9 +36,13 @@ save var '$param_file_name'
     $fit_file->close;
     system qq{gnuplot $fit_file_name &>$log_file_name};
     my $param_file = IO::File->new($param_file_name);
-    if ($param) {
-        my ($line) = grep {/$param/} <$param_file>;
-        my ($res)  = $line =~ /$param \s+ = \s+ (.+) /x;
+    if ($param && ref $param eq 'ARRAY') {
+        my $res = {};
+        for my $each_param (@$param) {
+            my ($line) = grep {/$each_param/} <$param_file>;
+            my ($val)  = $line =~ /$each_param \s+ = \s+ (.+) /x;
+            $res->{$each_param} = $val;
+        }
         return $res;
     }
 }
