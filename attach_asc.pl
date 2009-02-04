@@ -134,7 +134,6 @@ EOD
 <img src="%s" width=600 height=400 />
 <img src="%s" width=600 height=400 />
 \n}, $dls_trial_id, $correlation_img_file_name, $count_rate_img_file_name;
-        last;
     }
 }
 
