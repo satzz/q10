@@ -1,9 +1,10 @@
 CREATE TABLE temperture_p8_ratio (
+       temperture_p8_ratio_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
        temperture INTEGER NOT NULL,
        p8_ratio FLOAT NOT NULL,
        a FLOAT NOT NULL,
        b FLOAT NOT NULL,
-       key (temperture, p8_ratio)
+       KEY (temperture, p8_ratio)
 );
 
 CREATE TABLE microscope_photo (
