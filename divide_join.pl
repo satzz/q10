@@ -22,10 +22,12 @@ my $html = '';
     for my $temperture (@temperture) {
         warn "temperture : $temperture";
         my $dat_file_name = $dat_dir->file(sprintf 'temperture_%s.dat', $temperture);
+        my $dat_ln_file_name = $dat_dir->file(sprintf 'temperture_%s_ln.dat', $temperture);
         my $plt_file_name = $plt_dir->file(sprintf 'temperture_%s.plt', $temperture);
         my $ps_file_name  = $ps_dir->file(sprintf 'temperture_%s.ps', $temperture);
         my $img_file_name  = $img_dir->file(sprintf 'temperture_%s.png', $temperture);
         my $dat_file = IO::File->new($dat_file_name, 'w');
+        my $dat_ln_file = IO::File->new($dat_ln_file_name, 'w');
         my $plt_file = IO::File->new($plt_file_name, 'w');
         my @dls_trial = moco('DLSTrialCellSample')->search(
             where => {temperture => $temperture},
@@ -35,23 +37,28 @@ my $html = '';
         my $index = -1;
         my @plot;
         my $plot;
-        my $out;
+        my ($out, $out_ln);
         for my $dls_trial (@dls_trial) {
             $p8_ratio = $dls_trial->p8_ratio;
             if (!defined $old_p8_ratio or $old_p8_ratio != $p8_ratio) {
+                $out .= "\n\n" if defined $old_p8_ratio;
                 $out .= sprintf "# %s%% P8\n", $p8_ratio;
+                $out_ln .= "\n\n" if defined $old_p8_ratio;
+                $out_ln .= sprintf "# %s%% P8\n", $p8_ratio;
                 $index++;
                 push @plot, sprintf qq{'%s' ind %s t '%s%% P8'}, $dat_file_name, $index, $p8_ratio;
-                $out .= "\n\n";
             }
             my $k = $dls_trial->k;
             my $relaxation_time = $dls_trial->relaxation_time or next;
             $out .= sprintf "%s\t%s\n", $k, 1/$relaxation_time;
+            $out_ln .= sprintf "%s\t%s\n", log($k), log(1/$relaxation_time) if $relaxation_time > 0;
             $old_p8_ratio = $p8_ratio;
         }
         $plot = join ',', @plot;
         $dat_file->print($out);
         $dat_file->close;
+        $dat_ln_file->print($out_ln);
+        $dat_ln_file->close;
         $dat_file->close;
         $out = qq{
 set term postscript
@@ -101,7 +108,7 @@ plot $plot
             }
             my $temperture = $dls_trial->temperture;
             $old_p8_ratio = $p8_ratio;
-            $out .= sprintf "%s\t%s\n", $temperture, 1/$relaxation_time;
+            $out .= sprintf "%s\t%s\n", $temperture/10, 1/$relaxation_time;
         }
         $plot = join ',', @plot;
         $dat_file->print($out);
