@@ -16,9 +16,8 @@ our @EXPORT = qw/moco/;
 __PACKAGE__->db_object('Q10::DataBase');
 
 sub moco (@) {
-    my $model = shift;
-    return __PACKAGE__ unless $model;
-    $model = join '::', 'Q10::MoCo', $model;
+    my $model = shift or return __PACKAGE__;
+    $model = "Q10::MoCo::$model";
     $model->require or die $@;
     $model;
 }
