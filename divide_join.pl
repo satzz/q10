@@ -20,7 +20,6 @@ my $html = '';
 {
     my @temperture = map {$_->temperture} moco('DLSTrial')->search(field => 'distinct temperture', order => 'temperture desc');
     for my $temperture (@temperture) {
-#         $temperture ==1310 or next;
         my $dat_file_name = $dat_dir->file(sprintf 'temperture_%s.dat', $temperture);
         my $plt_file_name = $plt_dir->file(sprintf 'temperture_%s.plt', $temperture);
         my $ps_file_name  = $ps_dir->file(sprintf 'temperture_%s.ps', $temperture);
