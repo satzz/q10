@@ -87,5 +87,8 @@ INSERT INTO sample (sample_id, p8_ratio) VALUES(15, 20.3);
 INSERT INTO sample (sample_id, p8_ratio) VALUES(16, 7.5);
 INSERT INTO sample (sample_id, p8_ratio) VALUES(17, 12.9);
 
+select date,  temperture, p8_ratio, rotation_angle, count_rate_max, 1/relaxation_time from dls_trial inner join cell using(cell_id) inner join sample using (sample_id) where relaxation_time > 0 and temperture = 800 and p8_ratio > 40 order by date,temperture, rotation_angle;
+
+
 
 
