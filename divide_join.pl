@@ -30,7 +30,7 @@ my $html = '';
         my $dat_ln_file = IO::File->new($dat_ln_file_name, 'w');
         my $plt_file = IO::File->new($plt_file_name, 'w');
         my @dls_trial = moco('DLSTrialCellSample')->search(
-            where => {temperture => $temperture},
+            where => [q{temperture = ? AND date NOT IN ('2009-01-26', '2009-01-29')}, $temperture],
             order => 'p8_ratio ASC, rotation_angle ASC',
         );
         my ($old_p8_ratio, $p8_ratio);
@@ -89,7 +89,7 @@ plot $plot
         my $dat_file = IO::File->new($dat_file_name, 'w');
         my $plt_file = IO::File->new($plt_file_name, 'w');
         my @dls_trial = moco('DLSTrialCellSample')->search(
-            where => {rotation_angle => $rotation_angle},
+            where => [q{rotation_angle = ? AND date NOT IN ('2009-01-26', '2009-01-29')}, $rotation_angle],
             order => 'p8_ratio ASC, temperture ASC',
         );
         my ($old_p8_ratio, $p8_ratio);
@@ -119,7 +119,7 @@ set term postscript
 set key outside
 set xlabel 'temperture[deg C]'
 set ylabel '1/relaxation time[/ms]'
-set xrange [600:1600]
+set xrange [60:160]
 set yrange [0:100]
 set output '$ps_file_name'
 plot $plot
