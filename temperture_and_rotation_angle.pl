@@ -18,9 +18,9 @@ my $divider1 = Q10::Divider->new(
     divider  => 'temperture',
     key      => 'p8_ratio',
     x        => 'k',
-    y        => 'relaxation_time inverse'
+    y        => 'relaxation_time inverse',
     logscale => [qw/x y/],
-    xrange   => [0.004, 0.01];
+    range    => {x => [0.004, 0.01]},
 );
 $divider1->run;
 $html .= $divider1->get_html;
@@ -31,8 +31,7 @@ my $divider2 = Q10::Divider->new(
     x        => 'temperture',
     y        => 'relaxation_time inverse'
     logscale => [qw/y/],
-    xrange   => [60, 160];
-    yrange   => [0, 100];
+    range    => {x => [60, 160], y => [0, 100]},
 );
 $divider2->run;
 $html .= $divider2->get_html;
