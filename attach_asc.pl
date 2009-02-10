@@ -14,8 +14,7 @@ my $ps_dir  = dir($Bin, qw/ graph ps /);
 my $img_dir = dir($Bin, qw/ graph img /);
 my $param_dir = dir($Bin, qw/ graph param /);
 my $log_dir = dir($Bin, qw/ graph log /);
-my $all_dls_trial = moco('DLSTrial')->retrieve_all;
-$all_dls_trial->each(sub {$_->delete});
+moco('DLSTrial')->retrieve_all->each(sub {$_->delete});
 unlink $dat_dir->file($_) for grep {/dat/} $dat_dir->open->read;
 unlink $plt_dir->file($_) for grep {/plt/} $plt_dir->open->read;
 unlink $ps_dir->file($_) for grep {/ps/} $ps_dir->open->read;
@@ -26,7 +25,6 @@ my $graph_html;
 for my $date (sort grep {/\d+/} $asc_dir->open->read) {
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
     $day or next;
-#     $day == 29 or next;
     my $date_dir = $asc_dir->subdir($date);
     for my $asc_file_name (sort grep {/ASC/} $date_dir->open->read) {
         warn sprintf '%s', $date_dir->file($asc_file_name);
@@ -77,6 +75,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
             sample_position     => $sample_position,
             count_rate_min      => $count_rate_min,
             count_rate_max      => $count_rate_max,
+            correlation_max     => $correlation_max,
         );
         my $dls_trial_id = $dls_trial->dls_trial_id;
         my $correlation_dat_file_name = $dat_dir->file(sprintf 'correlation_dls_%s.dat', $dls_trial_id);
@@ -99,7 +98,7 @@ for my $date (sort grep {/\d+/} $asc_dir->open->read) {
 
         my $correlation_title = '';
         my $count_rate_title = '';
-        my $tau = Q10::Gnuplot->get_param(
+        my $res = Q10::Gnuplot->get_param(
             fit_file_name   => $fit_file_name,
             log_file_name   => $log_file_name,
             statement       => qq{
@@ -107,8 +106,13 @@ set xrange [0.01:1]
 fit y_0 + A * exp(-(x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta
 },
             param_file_name => $param_file_name,
-        )->{tau};
+        );
+        my $tau = $res->{tau};
+        my $fit_wssr = $res->{FIT_WSSR};
+        my $fit_stdfit = $res->{FIT_STDFIT};
         $dls_trial->relaxation_time($tau);
+        $dls_trial->fit_wssr($fit_wssr);
+        $dls_trial->fit_stdfit($fit_stdfit);
         $correlation_plt_file->print (<<EOD);
 set term postscript
 set yrange[0:$correlation_max]
