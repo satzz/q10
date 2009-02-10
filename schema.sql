@@ -1,9 +1,9 @@
 CREATE TABLE temperture_p8_ratio (
        temperture_p8_ratio_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
        temperture INTEGER NOT NULL,
-       p8_ratio FLOAT NOT NULL,
-       a FLOAT NOT NULL,
-       b FLOAT NOT NULL,
+       p8_ratio NUMERIC NOT NULL,
+       a NUMERIC NOT NULL,
+       b NUMERIC NOT NULL,
        KEY (temperture, p8_ratio)
 );
 
@@ -17,9 +17,9 @@ CREATE TABLE microscope_trial (
        microscope_trial_id INTEGER NOT NULL PRIMARY KEY,
        cell_id INTEGER NOT NULL,
        date DATE NOT NULL,
-       i_to_n FLOAT,
-       n_to_cry FLOAT,
-       n_to_b4 FLOAT
+       i_to_n NUMERIC,
+       n_to_cry NUMERIC,
+       n_to_b4 NUMERIC
 );
 
 INSERT INTO microscope_trial (microscope_trial_id, cell_id, date, i_to_n, n_to_cry, n_to_b4) VALUES (1,  1,  '2008-12-08', 151.9, 74.7, 103.0);
@@ -45,24 +45,24 @@ CREATE TABLE dls_trial (
        cell_id INTEGER NOT NULL,
        date DATE NOT NULL,
        temperture INTEGER NOT NULL,
-       relaxation_time FLOAT NOT NULL,
+       relaxation_time NUMERIC NOT NULL,
        rotation_angle INTEGER NOT NULL,
        sample_angle INTEGER NOT NULL,
        laser_position INTEGER NOT NULL,
        nd_filter_position INTEGER NOT NULL,
        polarizer_angle INTEGER NOT NULL,
        sample_position INTEGER NOT NULL,
-       fit_wssr FLOAT NOT NULL,
-       fit_stdfit FLOAT NOT NULL,
-       correlation_max FLOAT NOT NULL,
-       count_rate_max FLOAT NOT NULL,
-       count_rate_min FLOAT NOT NULL
+       fit_wssr NUMERIC NOT NULL,
+       fit_stdfit NUMERIC NOT NULL,
+       correlation_max NUMERIC NOT NULL,
+       count_rate_max NUMERIC NOT NULL,
+       count_rate_min NUMERIC NOT NULL
 );
 
 CREATE TABLE cell (
        cell_id INTEGER NOT NULL PRIMARY KEY,
        sample_id INTEGER NOT NULL,
-       thickness FLOAT NOT NULL
+       thickness NUMERIC NOT NULL
 );
 
 INSERT INTO cell (cell_id, sample_id, thickness) VALUES(1,  10, 7.2);
@@ -78,7 +78,7 @@ INSERT INTO cell (cell_id, sample_id, thickness) VALUES(11, 17, 7.2);
 
 CREATE TABLE sample (
        sample_id INTEGER NOT NULL PRIMARY KEY,
-       p8_ratio FLOAT NOT NULL
+       p8_ratio NUMERIC NOT NULL
 );
 
 INSERT INTO sample (sample_id, p8_ratio) VALUES(8,  0);
