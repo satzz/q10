@@ -51,7 +51,12 @@ CREATE TABLE dls_trial (
        laser_position INTEGER NOT NULL,
        nd_filter_position INTEGER NOT NULL,
        polarizer_angle INTEGER NOT NULL,
-       sample_position INTEGER NOT NULL
+       sample_position INTEGER NOT NULL,
+       fit_wssr FLOAT NOT NULL,
+       fit_stdfit FLOAT NOT NULL,
+       correlation_max FLOAT NOT NULL,
+       count_rate_max FLOAT NOT NULL,
+       count_rate_min FLOAT NOT NULL
 );
 
 CREATE TABLE cell (
