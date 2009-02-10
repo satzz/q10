@@ -65,6 +65,8 @@ sub run {
             for my $dls_trial (@dls_trial) {
                 my $x_val = $x eq 'rotation_angle' ? $dls_trial->k : $dls_trial->$x;
                 my $y_val = $y eq 'rotation_angle' ? $dls_trial->k : $dls_trial->$y;
+                $x_val /= 10 if $x eq 'temperture';
+                $y_val /= 10 if $y eq 'temperture';
                 next if $x_val <= 0;
                 next if $y_val <= 0;
                 my $x_plot = $x_inv ? 1 / $x_val : $x_val;
