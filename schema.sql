@@ -1,7 +1,7 @@
 CREATE TABLE temperture_p8_ratio (
        temperture_p8_ratio_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
        temperture INTEGER NOT NULL,
-       p8_ratio NUMERIC NOT NULL,
+       p8_ratio NUMERIC(3,1) NOT NULL,
        a NUMERIC NOT NULL,
        b NUMERIC NOT NULL,
        KEY (temperture, p8_ratio)
@@ -62,7 +62,7 @@ CREATE TABLE dls_trial (
 CREATE TABLE cell (
        cell_id INTEGER NOT NULL PRIMARY KEY,
        sample_id INTEGER NOT NULL,
-       thickness NUMERIC NOT NULL
+       thickness NUMERIC(2,1) NOT NULL
 );
 
 INSERT INTO cell (cell_id, sample_id, thickness) VALUES(1,  10, 7.2);
@@ -78,7 +78,7 @@ INSERT INTO cell (cell_id, sample_id, thickness) VALUES(11, 17, 7.2);
 
 CREATE TABLE sample (
        sample_id INTEGER NOT NULL PRIMARY KEY,
-       p8_ratio NUMERIC NOT NULL
+       p8_ratio NUMERIC(3,1) NOT NULL
 );
 
 INSERT INTO sample (sample_id, p8_ratio) VALUES(8,  0);
