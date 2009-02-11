@@ -42,6 +42,7 @@ sub run {
         where => join ' AND ', @where,
     );
     for my $divider_val (@divider) {
+        warn sprintf '%s = %s', $divider, $divider_val;
         my $dat_file_name = dat_dir->file(sprintf '%s_%s_%s_%s_%s.dat', $divider, $key, $x, $y, $divider_val);
         my $plt_file_name = plt_dir->file(sprintf '%s_%s_%s_%s_%s.plt', $divider, $key, $x, $y, $divider_val);
         my $ps_file_name  = ps_dir->file(sprintf '%s_%s_%s_%s_%s.ps', $divider, $key, $x, $y, $divider_val);
@@ -56,6 +57,7 @@ sub run {
         my $index = 0;
         my @dat_total, my @plot;
         for my $key_val (@key) {
+            warn sprintf '  %s = %s', $key, $key_val;
             my $where = join ' AND ', (@where, qq{ $divider = ? }, qq{ $key = ? });
             my @dls_trial = moco('DLSTrialCellSample')->search(
                 where => [$where, $divider_val, $key_val],
@@ -63,6 +65,7 @@ sub run {
             scalar @dls_trial > 3 or next;
             my @dat;
             for my $dls_trial (@dls_trial) {
+                warn 'HITTTTTTTT' if $dls_trial->date eq '2009-02-10';
                 my $x_val = $x eq 'rotation_angle' ? $dls_trial->k : $dls_trial->$x;
                 my $y_val = $y eq 'rotation_angle' ? $dls_trial->k : $dls_trial->$y;
                 $x_val /= 10 if $x eq 'temperture';
@@ -76,7 +79,12 @@ sub run {
             scalar @dat and unshift @dat, sprintf "# %s\n", $key_val;
             my $dat = join '', @dat or next;
             push @dat_total, $dat;
-            my $title = $key_val;
+            my $title = sprintf '%s = %s', $key, $key_val;
+            if ($key eq 'p8_ratio') {
+                $title = sprintf '%s%% P8', $key_val;
+            } elsif ($key eq 'temperture') {
+                $title = sprintf '%s deg C', $key_val / 10;
+            }
             push @plot, sprintf qq{'%s' ind %s t '%s'}, $dat_file_name, $index, $title;
             $index++;
         }
@@ -91,7 +99,7 @@ sub run {
         );
         my $label_hash = {
             temperture                => 'Temperture[deg C]',
-            rotation_angle            => 'k[1/nm]',
+            rotation_angle            => 'k[/nm]',
             p8_ratio                  => 'P8 Ratio[%]',
             relaxation_time           => 'relaxation time[ms]',
             'relaxation_time inverse' => '1/relaxation time[/ms]',
