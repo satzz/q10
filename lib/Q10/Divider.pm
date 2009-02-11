@@ -11,7 +11,7 @@ use Q10::Config;
 use Q10::Gnuplot;
 use Carp;
 
-__PACKAGE__->mk_accessors qw/divider  key  x  y  logscale  range  _html  where/;
+__PACKAGE__->mk_accessors qw/divider  key  x  y  logscale  range  _html  where  size/;
 
 sub get_html {
     my $self = shift;
@@ -99,6 +99,7 @@ sub run {
         );
         my $label_hash = {
             temperture                => 'Temperture[deg C]',
+            count_rate_max            => 'Count Rate Max',
             rotation_angle            => 'k[/nm]',
             p8_ratio                  => 'P8 Ratio[%]',
             relaxation_time           => 'relaxation time[ms]',
@@ -111,6 +112,9 @@ sub run {
         }
         push @plt_content, sprintf qq{set xlabel '%s'}, $label_hash->{$x};
         push @plt_content, sprintf qq{set ylabel '%s'}, $label_hash->{$y};
+        if (my $size = $self->size) {
+            push @plt_content, sprintf qq{set size %s,%s}, $size->{x} || 1, $size->{y} || 1,
+        }
         if (my $range = $self->range) {
             my ($xrange, $yrange) = ($range->{x}, $range->{y});
             push @plt_content, sprintf qq{set xrange [%s:%s]\n}, $xrange->[0], $xrange->[1] if $xrange;
