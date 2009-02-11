@@ -6,14 +6,9 @@ use IO::File;
 use Data::Dumper;
 use Path::Class;
 use Q10::MoCo;
+use Q10::Config;
+use Q10::Divider;
 use Q10::Gnuplot;
-
-my $dat_dir = dir($Bin, qw/ graph dat /);
-my $plt_dir = dir($Bin, qw/ graph plt /);
-my $ps_dir  = dir($Bin, qw/ graph ps /);
-my $img_dir = dir($Bin, qw/ graph img /);
-my $param_dir = dir($Bin, qw/ graph param /);
-my $log_dir = dir($Bin, qw/ graph log /);
 
 {
     my $index = -1;
@@ -53,12 +48,12 @@ set size 1.5,1
 set xlabel 'Count Rate Max'
 set ylabel 'Relaxation Time[ms]'
 set xrange[3:2000]
-set yrange[0.01:1]
+set yrange[0.01:2]
 set logscale x
 set logscale y
 set output '$ps_file_name'
 plot $plot
-        };
+};
     $plt_file->print($out);
     Q10::Gnuplot->run($plt_file_name);
     Q10::Gnuplot->convert($ps_file_name, $img_file_name);
