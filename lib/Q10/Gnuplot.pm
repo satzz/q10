@@ -5,6 +5,7 @@ use FindBin qw/$Bin/;
 use IO::File;
 use Data::Dumper;
 use Path::Class;
+use Q10::Parser;
 
 sub run{
     my $class = shift;
@@ -32,12 +33,10 @@ sub get_param {
 save var '$param_file_name'
 });
     $fit_file->close;
-    system qq{gnuplot $fit_file_name &>$log_file_name};
-    my $res = {};
-    my $param;
-    my $content = $param_file_name->slurp;
-    my %param = $content =~ /(\w+) \s+ = \s+ (.+) /xg;
-    return \%param;
+    my $com = qq{gnuplot $fit_file_name &>$log_file_name};
+    system $com;
+    -e $param_file_name or return;
+    Q10::Parser->parse($param_file_name);
 }
 
 1;

@@ -8,16 +8,6 @@ use Path::Class;
 use Q10::MoCo;
 use Q10::Gnuplot;
 
-my $dat_dir = dir($Bin, qw/ graph dat /);
-my $plt_dir = dir($Bin, qw/ graph plt /);
-my $ps_dir  = dir($Bin, qw/ graph ps /);
-my $img_dir = dir($Bin, qw/ graph img /);
-my $html_dir = dir($Bin, qw/ html /);
-my $html_file_name = $html_dir->file('index.html');
-my $html_file = IO::File->new($html_file_name, 'w');
-
-my $html = '';
-
 {
     my @rotation_angle = map {$_->rotation_angle} moco('DLSTrial')->search(field => 'distinct rotation_angle', order => 'rotation_angle asc');
     for my $rotation_angle (@rotation_angle) {
@@ -51,7 +41,7 @@ my $html = '';
             my $temperture = $dls_trial->temperture;
             $old_p8_ratio = $p8_ratio;
             $out .= sprintf "%s\t%s\n", $temperture/10, 1/$relaxation_time;
-        }
+         }
         $plot = join ',', @plot;
         $dat_file->print($out);
         $dat_file->close;

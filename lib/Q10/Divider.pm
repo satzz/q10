@@ -19,24 +19,19 @@ sub get_html {
 }
 
 sub run {
+    warn 'Divider run';
     my $self = shift;
     my $divider = $self->divider or croak 'no divider';
     my $key = $self->key or croak 'no key';
     my $x = $self->x or croak 'no x';
     my $y = $self->y or croak 'no y';
-    my ($x_inv, $y_inv);
-    if ($x =~ / inverse/) {
-        $x_inv = 1;
-        $x =~ s/ inverse//g;
-    }
-    if ($y =~ / inverse/) {
-        $y_inv = 1;
-        $y =~ s/ inverse//g;
-    }
-
+    my $x_inv = !! ($x =~ / inverse/) and $x =~ s/ inverse//g;
+    my $y_inv = !! ($y =~ / inverse/) and $y =~ s/ inverse//g;
     my @where = qw/TRUE/;
     push @where, $self->where if $self->where;
-    my @divider = map {$_->$divider} moco('DLSTrialCellSample')->search(
+    my $model = 'DLSTrialCellSample';
+    $model = 'Sample' if $divider eq 'p8_ratio';
+    my @divider = map {$_->$divider} moco($model)->search(
         field => qq{distinct $divider},
         order => "$divider DESC",
         where => join ' AND ', @where,
@@ -65,7 +60,7 @@ sub run {
             scalar @dls_trial > 3 or next;
             my @dat;
             for my $dls_trial (@dls_trial) {
-                warn 'HITTTTTTTT' if $dls_trial->date eq '2009-02-10';
+#                 warn 'HITTTTTTTT' if $dls_trial->date eq '2009-02-10';
                 my $x_val = $x eq 'rotation_angle' ? $dls_trial->k : $dls_trial->$x;
                 my $y_val = $y eq 'rotation_angle' ? $dls_trial->k : $dls_trial->$y;
                 $x_val /= 10 if $x eq 'temperture';
@@ -97,6 +92,9 @@ sub run {
             'set term postscript',
             'set key outside',
         );
+        my ($x_label, $y_label) = ($x, $y);
+        $x_label = "$x_label inverse" if $x_inv;
+        $y_label = "$y_label inverse" if $y_inv;
         my $label_hash = {
             temperture                => 'Temperture[deg C]',
             count_rate_max            => 'Count Rate Max',
@@ -110,8 +108,8 @@ sub run {
                 push @plt_content, qq{set logscale $_} if $logscale->{$_};
             }
         }
-        push @plt_content, sprintf qq{set xlabel '%s'}, $label_hash->{$x};
-        push @plt_content, sprintf qq{set ylabel '%s'}, $label_hash->{$y};
+        push @plt_content, sprintf qq{set xlabel '%s'}, $label_hash->{$x_label};
+        push @plt_content, sprintf qq{set ylabel '%s'}, $label_hash->{$y_label};
         if (my $size = $self->size) {
             push @plt_content, sprintf qq{set size %s,%s}, $size->{x} || 1, $size->{y} || 1,
         }
