@@ -45,7 +45,10 @@ CREATE TABLE dls_trial (
        cell_id INTEGER NOT NULL,
        date DATE NOT NULL,
        temperture INTEGER NOT NULL,
-       relaxation_time NUMERIC NOT NULL,
+       relaxation_time FLOAT NOT NULL,
+       beta FLOAT NOT NULL,
+       a FLOAT NOT NULL,
+       y FLOAT NOT NULL,
        rotation_angle INTEGER NOT NULL,
        sample_angle INTEGER NOT NULL,
        laser_position INTEGER NOT NULL,
@@ -75,6 +78,8 @@ INSERT INTO cell (cell_id, sample_id, thickness) VALUES(8,  16, 10.2);
 INSERT INTO cell (cell_id, sample_id, thickness) VALUES(9,  13, 7.9);
 INSERT INTO cell (cell_id, sample_id, thickness) VALUES(10, 12, 6.7);
 INSERT INTO cell (cell_id, sample_id, thickness) VALUES(11, 17, 7.2);
+INSERT INTO cell (cell_id, sample_id, thickness) VALUES(12, 9, 7.6); -- thickness unknown
+INSERT INTO cell (cell_id, sample_id, thickness) VALUES(13, 9, 8.9); -- thickness unknown
 
 CREATE TABLE sample (
        sample_id INTEGER NOT NULL PRIMARY KEY,
