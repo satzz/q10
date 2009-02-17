@@ -57,8 +57,7 @@ for my $xls_file_name (grep { /txt/ } $xls_dir->open->read) {
             defined $val or last;
         }
     }
-    for my $col_index ( 0 .. $#$temperture ) {
-        $col_index > 1 or next;
+    for my $col_index ( 2 .. $#$temperture ) {
         next if $col_index % 2;
         defined $correlation[0][$col_index] or last;
         my $asc_file_name = sprintf
@@ -75,7 +74,7 @@ for my $xls_file_name (grep { /txt/ } $xls_dir->open->read) {
         $out .= qq{"Correlation"\n};
         $out .= join "\n", map {sprintf "%s\t%s", $_->[$col_index], $_->[$col_index+1]} @correlation;
         $out .= qq{"Count Rate"\n};
-        $out .= join "\n", map {sprintf "%s\t%s", $_->[$col_index], $_->[$col_index+1]} @count_rate;
+        $out .= join "\n", map {sprintf "%s\t%s", $_->[$col_index-1], $_->[$col_index]} @count_rate;
         my $dir = dir($Bin, qw/ DLS asc /, "$year$month$day");
         mkdir "$dir";
         my $asc_file = IO::File->new(sprintf '>%s', $dir->file($asc_file_name));
