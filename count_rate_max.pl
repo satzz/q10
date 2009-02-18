@@ -22,6 +22,7 @@ $divider1->y        = 'relaxation_time inverse';
 $divider1->logscale = {x => 1, y => 1};
 $divider1->size     = {x => 1.5};
 $divider1->range    = {x => [3, 2000], y => [1, 100]};
+# $divider1->where    = qq{cell_id = 13};
 $divider1->run;
 
 $html_file->print($divider1->get_html);
