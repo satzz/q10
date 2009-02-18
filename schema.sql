@@ -4,6 +4,7 @@ CREATE TABLE temperture_p8_ratio (
        p8_ratio NUMERIC(3,1) NOT NULL,
        a NUMERIC NOT NULL,
        b NUMERIC NOT NULL,
+       temp_column INTEGER NOT NULL DEFAULT 0,
        KEY (temperture, p8_ratio)
 );
 
