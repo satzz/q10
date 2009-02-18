@@ -23,7 +23,7 @@ use Q10::Gnuplot;
     $divider1->y_inv      = 1;
     $divider1->logscale   = {x => 1, y => 1};
     $divider1->range      = {x => [0.004, 0.01]};
-    # $divider1->where    = qq{cell_id = 13};
+    $divider1->where    = qq{cell_id = 13};
     $divider1->run;
     $html .= $divider1->get_html;
     $html_file->print($html);
@@ -38,7 +38,7 @@ use Q10::Gnuplot;
     $divider1->y_inv      = 1;
     $divider1->x_logvalue = 1;
     $divider1->y_logvalue = 1;
-    # $divider1->where    = qq{cell_id = 13};
+    $divider1->where    = qq{cell_id = 13};
     $divider1->run;
 }
 

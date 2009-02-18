@@ -13,7 +13,7 @@ use Q10::Parser;
 my $graph_html;
 my @dls_trial = moco('DLSTrial')->retrieve_all;
 for my $dls_trial (@dls_trial) {
-#     $dls_trial->date eq '2009-02-15' or $dls_trial->date eq '2009-02-17' or next;
+    $dls_trial->date eq '2009-02-18' or next;
     my $y = $dls_trial->y;
     my $a = $dls_trial->a;
     my $tau = $dls_trial->relaxation_time;

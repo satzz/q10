@@ -17,7 +17,7 @@ use Q10::Gnuplot;
 # unlink log_dir->file($_) for grep {/txt/} log_dir->open->read;
 # my $graph_html;
 for my $date (sort grep {/\d+/} asc_dir->open->read) {
-#     $date eq '090215' or $date eq '090217' or next;
+    $date eq '090218' or next;
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
     $day or next;
     my $date_dir = asc_dir->subdir($date);

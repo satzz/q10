@@ -15,7 +15,7 @@ my $html_file_name = html_dir->file('trial_list.html');
 my $html_file = IO::File->new($html_file_name, 'w');
 my $html = '';
 
-my @dls_trial = moco('DLSTrial')->search(order => 'relaxation_time asc', where => 'relaxation_time > 0');
+my @dls_trial = moco('DLSTrial')->search(order => 'relaxation_time asc', where => 'relaxation_time > 0 and cell_id = 13');
 $html .= qq{<table border=1>\n};
 $html .= qq{<tr><th>ID</th><th>Temp</th><th>P8[%]</th><th>Correlation Max</th><th>Relx.Time[ms]</th><th>date</th></tr>\n};
 for my $dls_trial (@dls_trial) {
