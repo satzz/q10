@@ -116,6 +116,7 @@ sub run {
         $y_label = "$y_label inverse" if $self->y_inv;
         my $label_hash = {
             temperture                => 'Temperture[deg C]',
+            correlation_max           => 'Correlation Max',
             count_rate_max            => 'Count Rate Max',
             rotation_angle            => 'k[/nm]',
             p8_ratio                  => 'P8 Ratio[%]',
