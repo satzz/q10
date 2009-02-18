@@ -11,7 +11,7 @@ use Q10::Config;
 use Q10::Gnuplot;
 use Carp;
 
-__PACKAGE__->mk_accessors qw/divider  key  x  y  logscale  range  _html  where  size/;
+__PACKAGE__->mk_accessors qw/divider  key  x  y  x_inv  y_inv  x_logvalue  y_logvalue  logscale  range  _html  where  size  model  divider_model  with_lines/;
 
 sub get_html {
     my $self = shift;
@@ -25,27 +25,39 @@ sub run {
     my $key = $self->key or croak 'no key';
     my $x = $self->x or croak 'no x';
     my $y = $self->y or croak 'no y';
-    my $x_inv = !! ($x =~ / inverse/) and $x =~ s/ inverse//g;
-    my $y_inv = !! ($y =~ / inverse/) and $y =~ s/ inverse//g;
+#     my @x = split /\s/, $x;
+#     my @y = split /\s/, $y;
+#     my ($x_inv, $y_inv, $x_logvalue, $y_logvalue);
+#     for my $x_ite (@x) {
+#         if ($x_inv eq 'inverse') {
+#         }
+#         else ($y_inv)
+#     }
+#     my $x_inv = !! ($x =~ / inverse/) and $x =~ s/ inverse//g;
+#     my $y_inv = !! ($y =~ / inverse/) and $y =~ s/ inverse//g;
     my @where = qw/TRUE/;
     push @where, $self->where if $self->where;
-    my $model = 'DLSTrialCellSample';
-    $model = 'Sample' if $divider eq 'p8_ratio';
-    my @divider = map {$_->$divider} moco($model)->search(
+    my $divider_model = $self->divider_model || 'DLSTrialCellSample';
+    my $model = $self->model || 'DLSTrialCellSample';
+    $divider_model = 'Sample' if $divider eq 'p8_ratio';
+    my @divider = map {$_->$divider} moco($divider_model)->search(
         field => qq{distinct $divider},
         order => "$divider DESC",
         where => join ' AND ', @where,
     );
     for my $divider_val (@divider) {
         warn sprintf '%s = %s', $divider, $divider_val;
-        my $dat_file_name = dat_dir->file(sprintf '%s_%s_%s_%s_%s.dat', $divider, $key, $x, $y, $divider_val);
-        my $plt_file_name = plt_dir->file(sprintf '%s_%s_%s_%s_%s.plt', $divider, $key, $x, $y, $divider_val);
-        my $ps_file_name  = ps_dir->file(sprintf '%s_%s_%s_%s_%s.ps', $divider, $key, $x, $y, $divider_val);
-        my $img_file_name = img_dir->file(sprintf '%s_%s_%s_%s_%s.png', $divider, $key, $x, $y, $divider_val);
+        my $file_name = sprintf '%s_%s_%s_%s_%s', $divider, $key, $x, $y, $divider_val;
+        $file_name .= '_x_logvalue' if $self->x_logvalue;
+        $file_name .= '_y_logvalue' if $self->y_logvalue;
+        my $dat_file_name = dat_dir->file("$file_name.dat");
+        my $plt_file_name = plt_dir->file("$file_name.plt");
+        my $ps_file_name  = ps_dir->file("$file_name.ps");
+        my $img_file_name = img_dir->file("$file_name.png");
         my $dat_file = IO::File->new($dat_file_name, 'w');
         my $plt_file = IO::File->new($plt_file_name, 'w');
         my $where = join ' AND ', (@where, qq{ $divider = ? });
-        my @key = map {$_->$key} moco('DLSTrialCellSample')->search(
+        my @key = map {$_->$key} moco($model)->search(
             where => [$where, $divider_val],
             group => $key,
         );
@@ -54,7 +66,7 @@ sub run {
         for my $key_val (@key) {
             warn sprintf '  %s = %s', $key, $key_val;
             my $where = join ' AND ', (@where, qq{ $divider = ? }, qq{ $key = ? });
-            my @dls_trial = moco('DLSTrialCellSample')->search(
+            my @dls_trial = moco($model)->search(
                 where => [$where, $divider_val, $key_val],
             );
             scalar @dls_trial > 3 or next;
@@ -67,11 +79,14 @@ sub run {
                 $y_val /= 10 if $y eq 'temperture';
                 next if $x_val <= 0;
                 next if $y_val <= 0;
-                my $x_plot = $x_inv ? 1 / $x_val : $x_val;
-                my $y_plot = $y_inv ? 1 / $y_val : $y_val;
-                push @dat, sprintf "%s\t%s\n", $x_plot, $y_plot;
+                my $x_plot = $self->x_inv ? 1 / $x_val : $x_val;
+                my $y_plot = $self->y_inv ? 1 / $y_val : $y_val;
+                $x_plot = log($x_plot) if $self->x_logvalue;
+                $y_plot = log($y_plot) if $self->y_logvalue;
+                push @dat, {x_plot => $x_plot, y_plot => $y_plot};
             }
-            scalar @dat and unshift @dat, sprintf "# %s\n", $key_val;
+            @dat = map {sprintf "%s\t%s\n", $_->{x_plot}, $_->{y_plot}} sort {$a->{x_plot} <=> $b->{x_plot}} @dat;
+            scalar @dat and unshift @dat, sprintf "# %s%% P8\n", $key_val;
             my $dat = join '', @dat or next;
             push @dat_total, $dat;
             my $title = sprintf '%s = %s', $key, $key_val;
@@ -80,7 +95,11 @@ sub run {
             } elsif ($key eq 'temperture') {
                 $title = sprintf '%s deg C', $key_val / 10;
             }
-            push @plot, sprintf qq{'%s' ind %s t '%s'}, $dat_file_name, $index, $title;
+            push @plot, sprintf qq{'%s' ind %s %s t '%s'},
+                $dat_file_name,
+                    $index,
+                        $self->with_lines ? 'w l' : '',
+                            $title;
             $index++;
         }
         my $dat_total = join "\n\n", @dat_total or next;
@@ -93,8 +112,8 @@ sub run {
             'set key outside',
         );
         my ($x_label, $y_label) = ($x, $y);
-        $x_label = "$x_label inverse" if $x_inv;
-        $y_label = "$y_label inverse" if $y_inv;
+        $x_label = "$x_label inverse" if $self->x_inv;
+        $y_label = "$y_label inverse" if $self->y_inv;
         my $label_hash = {
             temperture                => 'Temperture[deg C]',
             count_rate_max            => 'Count Rate Max',
