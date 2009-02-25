@@ -10,8 +10,9 @@ use Q10::MoCo;
 use Q10::Config;
 use Q10::Gnuplot;
 use Carp;
+use List::Util qw/sum/;
 
-__PACKAGE__->mk_accessors qw/divider  key  x  y  x_inv  y_inv  x_logvalue  y_logvalue  logscale  range  _html  where  size  model  divider_model  with_lines/;
+__PACKAGE__->mk_accessors qw/divider  key  x  y  x_inv  y_inv  y_avg  x_logvalue  y_logvalue  logscale  range  _html  where  size  model  divider_model  with_lines/;
 
 sub get_html {
     my $self = shift;
@@ -55,6 +56,7 @@ sub run {
         my $ps_file_name  = ps_dir->file("$file_name.ps");
         my $img_file_name = img_dir->file("$file_name.png");
         my $dat_file = IO::File->new($dat_file_name, 'w');
+        warn $dat_file_name;
         my $plt_file = IO::File->new($plt_file_name, 'w');
         my $where = join ' AND ', (@where, qq{ $divider = ? });
         my @key = map {$_->$key} moco($model)->search(
@@ -69,8 +71,9 @@ sub run {
             my @dls_trial = moco($model)->search(
                 where => [$where, $divider_val, $key_val],
             );
-            scalar @dls_trial > 3 or next;
+            scalar @dls_trial >= 3 or next;
             my @dat;
+            my %dat;
             for my $dls_trial (@dls_trial) {
 #                 warn 'HITTTTTTTT' if $dls_trial->date eq '2009-02-10';
                 my $x_val = $x eq 'rotation_angle' ? $dls_trial->k : $dls_trial->$x;
@@ -83,7 +86,17 @@ sub run {
                 my $y_plot = $self->y_inv ? 1 / $y_val : $y_val;
                 $x_plot = log($x_plot) if $self->x_logvalue;
                 $y_plot = log($y_plot) if $self->y_logvalue;
-                push @dat, {x_plot => $x_plot, y_plot => $y_plot};
+                if ($self->y_avg) {
+                    $dat{$x_plot} ||= [];
+                    push @{$dat{$x_plot}}, $y_plot;
+                } else {
+                    push @dat, {x_plot => $x_plot, y_plot => $y_plot};
+                }
+            }
+            if ($self->y_avg) {
+                while (my ($dat_key, $dat_val) = each %dat) {
+                    push @dat, {x_plot => $dat_key, y_plot => (sum @$dat_val)/scalar @$dat_val};
+                }
             }
             @dat = map {sprintf "%s\t%s\n", $_->{x_plot}, $_->{y_plot}} sort {$a->{x_plot} <=> $b->{x_plot}} @dat;
             scalar @dat and unshift @dat, sprintf "# %s%% P8\n", $key_val;
@@ -122,6 +135,9 @@ sub run {
             p8_ratio                  => 'P8 Ratio[%]',
             relaxation_time           => 'relaxation time[ms]',
             'relaxation_time inverse' => '1/relaxation time[/ms]',
+            a                         => 'a',
+            beta                      => 'beta',
+            trial_num                 => 'trials',
         };
         if (my $logscale = $self->logscale) {
             for (qw/x y/) {
