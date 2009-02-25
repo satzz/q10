@@ -21,7 +21,7 @@ $divider2->y        = 'relaxation_time';
 $divider2->y_inv    = 1;
 $divider2->logscale = {y => 1};
 $divider2->range    = {x => [60, 160], y => [1, 100]};
-$divider2->where    = qq{cell_id = 13};
+$divider2->where    = qq{cell_id = 14};
 $divider2->run;
 $html .= $divider2->get_html;
 $html_file->print($html);

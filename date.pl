@@ -20,7 +20,7 @@ $divider1->key      = 'date';
 $divider1->x        = 'rotation_angle';
 $divider1->y        = 'relaxation_time inverse';
 $divider1->logscale = {x => 1, y => 1};
- $divider1->size     = {x => 1.5};
+$divider1->size     = {x => 1.5};
 $divider1->range    = {x => [0.004, 0.01], y => [2, 40]};
 $divider1->run;
 
