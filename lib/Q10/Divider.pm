@@ -26,16 +26,6 @@ sub run {
     my $key = $self->key or croak 'no key';
     my $x = $self->x or croak 'no x';
     my $y = $self->y or croak 'no y';
-#     my @x = split /\s/, $x;
-#     my @y = split /\s/, $y;
-#     my ($x_inv, $y_inv, $x_logvalue, $y_logvalue);
-#     for my $x_ite (@x) {
-#         if ($x_inv eq 'inverse') {
-#         }
-#         else ($y_inv)
-#     }
-#     my $x_inv = !! ($x =~ / inverse/) and $x =~ s/ inverse//g;
-#     my $y_inv = !! ($y =~ / inverse/) and $y =~ s/ inverse//g;
     my @where = qw/TRUE/;
     push @where, $self->where if $self->where;
     my $divider_model = $self->divider_model || 'DLSTrialCellSample';
@@ -71,7 +61,7 @@ sub run {
             my @dls_trial = moco($model)->search(
                 where => [$where, $divider_val, $key_val],
             );
-            scalar @dls_trial >= 3 or next;
+            $self->with_lines and scalar @dls_trial == 1 and next;
             my @dat;
             my %dat;
             for my $dls_trial (@dls_trial) {
@@ -99,7 +89,7 @@ sub run {
                 }
             }
             @dat = map {sprintf "%s\t%s\n", $_->{x_plot}, $_->{y_plot}} sort {$a->{x_plot} <=> $b->{x_plot}} @dat;
-            scalar @dat and unshift @dat, sprintf "# %s%% P8\n", $key_val;
+            scalar @dat and unshift @dat, sprintf "# value = %s\n", $key_val;
             my $dat = join '', @dat or next;
             push @dat_total, $dat;
             my $title = sprintf '%s = %s', $key, $key_val;
@@ -136,8 +126,12 @@ sub run {
             relaxation_time           => 'relaxation time[ms]',
             'relaxation_time inverse' => '1/relaxation time[/ms]',
             a                         => 'a',
+            b                         => 'b',
             beta                      => 'beta',
             trial_num                 => 'trials',
+            dls_day_count             => 'DLS Day Count',
+            day_count                 => 'Day Count',
+            microscope_count          => 'Microscope Day Count',
         };
         if (my $logscale = $self->logscale) {
             for (qw/x y/) {

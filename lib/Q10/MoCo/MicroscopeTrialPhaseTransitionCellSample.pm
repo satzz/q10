@@ -25,4 +25,21 @@ __PACKAGE__->has_a(
     }
 );
 
+sub dls_day_count {
+    my $self = shift;
+    moco('DLSTrial')->search(field => 'count(distinct date) as dls_day_count', where => ['date < :date', date => $self->date])->first->dls_day_count || 0;
+}
+
+sub microscope_day_count {
+    my $self = shift;
+    moco('MicroscopeTrial')->search(field => 'count(distinct date) as microscope_day_count', where => ['date < :date', date => $self->date])->first->microscope_day_count || 0;
+}
+
+sub day_count {
+    my $self = shift;
+#     $self->dls_day_count + $self->microscope_day_count;
+    use Date::Simple;
+    my $date = Date::Simple->new($self->date);
+    $date - Date::Simple->new('2008-12-07');
+}
 1;

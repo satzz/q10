@@ -10,9 +10,10 @@ use Path::Class;
 use UNIVERSAL::require;
 use Exporter::Lite;
 
-our @EXPORT = qw/asc_dir  dat_dir  plt_dir  ps_dir  img_dir  html_dir  param_dir  log_dir/;
+our @EXPORT = qw/asc_dir  xls_dir  dat_dir  plt_dir  ps_dir  img_dir  html_dir  param_dir  log_dir/;
 
 sub asc_dir  {dir($Bin, qw/ DLS  asc /)};
+sub xls_dir  {dir($Bin, qw/ DLS  xls /)};
 sub dat_dir  {dir($Bin, qw/ graph dat /)};
 sub plt_dir  {dir($Bin, qw/ graph plt /)};
 sub ps_dir   {dir($Bin, qw/ graph ps /)};
