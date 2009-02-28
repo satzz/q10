@@ -2,8 +2,8 @@ CREATE TABLE temperture_p8_ratio (
        temperture_p8_ratio_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
        temperture INTEGER NOT NULL,
        p8_ratio NUMERIC(3,1) NOT NULL,
-       a NUMERIC NOT NULL,
-       b NUMERIC NOT NULL,
+       a NUMERIC(2,1) NOT NULL,
+       b NUMERIC(2,1) NOT NULL,
        temp_column INTEGER NOT NULL DEFAULT 0,
        KEY (temperture, p8_ratio)
 );
@@ -59,6 +59,10 @@ INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (23, 13
 INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (24, 13, '2009-02-18');
 INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (25, 3, '2009-02-21');
 INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (26, 7, '2009-02-21');
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (27, 14, '2009-02-22');
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (28, 15, '2009-02-22');
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (29, 16, '2009-02-25');
+INSERT INTO microscope_trial (microscope_trial_id, cell_id, date) VALUES (30, 17, '2009-02-25');
 
 INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (1,  'i_to_n', 1519);
 INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (1,  'n_to_cry', 747);
@@ -124,6 +128,16 @@ INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transi
 INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (26,  'i_to_n', 1605);
 INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (26,  'n_to_cry', 865);
 INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (26,  'n_to_b4', 1000);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (27,  'i_to_n', 1400);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (27,  'n_to_b4', 1152);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (28,  'i_to_n', 1520);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (28,  'n_to_b4', 821);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (29,  'i_to_n', 1645);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (29,  'n_to_cry', 793);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (29,  'n_to_b4', 620);
+INSERT INTO microscope_trial_phase_transition (microscope_trial_id, phase_transition_type, temperture) VALUES (30,  'i_to_n', 1615);
+
+
 
     SELECT p8_ratio,
            temperture,
