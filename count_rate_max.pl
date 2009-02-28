@@ -22,9 +22,9 @@ $divider1->y        = 'relaxation_time';
 $divider1->y_inv    = 1;
 $divider1->logscale = {x => 1, y => 1};
 $divider1->size     = {x => 1.5};
-# $divider1->range    = {x => [3, 2000], y => [1, 100]};
-$divider1->range    = {x => [3, 2000]};
-# $divider1->where    = qq{cell_id = 14};
+$divider1->range    = {x => [3, 2000], y => [3, 200]};
+# $divider1->range    = {x => [3, 2000]};
+$divider1->where    = qq{p8_ratio < 40};
 $divider1->run;
 
 $html_file->print($divider1->get_html);

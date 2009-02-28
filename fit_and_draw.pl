@@ -11,12 +11,12 @@ use Q10::Gnuplot;
 use Q10::Parser;
 
 my $graph_html;
-my @dls_trial = moco('DLSTrial')->retrieve_all;
+my @dls_trial = moco('DLSTrial')->search(where => 'relaxation_time > 0');
 for my $dls_trial (@dls_trial) {
-    $dls_trial->cell_id == 14 or next;
+    $dls_trial->date eq '2009-02-26' or $dls_trial->date eq '2009-02-27' or $dls_trial->date eq '2009-02-28' or next;
     my $y = $dls_trial->y;
     my $a = $dls_trial->a;
-    my $tau = $dls_trial->relaxation_time;
+    my $tau = $dls_trial->relaxation_time or next;
     my $beta = $dls_trial->beta;
     my $dls_trial_id = $dls_trial->dls_trial_id;
     warn $dls_trial_id;

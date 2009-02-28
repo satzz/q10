@@ -17,8 +17,6 @@ my $dat_file = IO::File->new($dat_file_name, 'w');
 my $dat_ln_file = IO::File->new($dat_ln_file_name, 'w');
 my $plt_file = IO::File->new($plt_file_name, 'w');
 
-use DBIx::MoCo::DataBase;
-# $DBIx::MoCo::DataBase::DEBUG=1;
 {
     my $html_file_name = html_dir->file('date_phase_transition.html');
     my $html_file = IO::File->new($html_file_name, 'w');
@@ -27,10 +25,10 @@ use DBIx::MoCo::DataBase;
     $divider1->model         = 'MicroscopeTrialPhaseTransitionCellSample';
     $divider1->divider_model = 'MicroscopeTrialPhaseTransition';
     $divider1->divider       = 'phase_transition_type';
-    $divider1->key           = 'p8_ratio';
-    $divider1->x             = 'trial_num';
+    $divider1->key           = 'cell_id';
+    $divider1->x             = 'day_count';
     $divider1->y             = 'temperture';
-    $divider1->size          = {x => 1.5};
+    $divider1->y_avg         = 1;
     $divider1->with_lines    = 1;
     $divider1->run;
     $html .= $divider1->get_html;

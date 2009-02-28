@@ -21,9 +21,12 @@ use Q10::Gnuplot;
     $divider1->x          = 'rotation_angle';
     $divider1->y          = 'relaxation_time';
     $divider1->y_inv      = 1;
+    $divider1->y_avg      = 1;
+    $divider1->with_lines = 1;
     $divider1->logscale   = {x => 1, y => 1};
-    $divider1->range      = {x => [0.004, 0.01]};
-    $divider1->where    = qq{cell_id = 14};
+    $divider1->range      = {x => [0.004, 0.01], y => [1, 200]};
+    $divider1->where      = qq{relaxation_time > 0.005 AND date NOT IN ('2009-01-26', '2009-01-27', '2009-01-28', '2009-01-29', '2009-02-10', '2009-02-17')};
+#     $divider1->where      = qq{relaxation_time > 0.005 AND date IN ('2009-02-26')};
     $divider1->run;
     $html .= $divider1->get_html;
     $html_file->print($html);
@@ -38,7 +41,7 @@ use Q10::Gnuplot;
     $divider1->y_inv      = 1;
     $divider1->x_logvalue = 1;
     $divider1->y_logvalue = 1;
-    $divider1->where    = qq{cell_id = 14};
+    $divider1->where      = qq{relaxation_time > 0.005 AND date NOT IN ('2009-01-26', '2009-01-27', '2009-01-28', '2009-01-29', '2009-02-10', '2009-02-17')};
     $divider1->run;
 }
 

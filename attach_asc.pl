@@ -17,7 +17,7 @@ use Q10::Gnuplot;
 # unlink log_dir->file($_) for grep {/txt/} log_dir->open->read;
 # my $graph_html;
 for my $date (sort grep {/\d+/} asc_dir->open->read) {
-    $date eq '090225' or next;
+    $date eq '090226' or $date eq '090227' or $date eq '090228' or next;
     my ($year, $month, $day) = $date =~ /^(\d{2})(\d{2})(\d{2})$/;
     $day or next;
     my $date_dir = asc_dir->subdir($date);
@@ -72,6 +72,7 @@ for my $date (sort grep {/\d+/} asc_dir->open->read) {
                 sample_position     => $sample_position,
             }
         )->first;
+        $dls_trial->relaxation_time > 0.2 or next;
         $dls_trial or $dls_trial = moco('DLSTrial')->create(
             cell_id             => $cell_id,
             date                => $date_val,
@@ -107,6 +108,7 @@ for my $date (sort grep {/\d+/} asc_dir->open->read) {
         $correlation_dat_file->close;
         $count_rate_dat_file->close;
 
+        my $count_rate_max = $dls_trial->count_rate_max;
         my $correlation_title = '';
         my $count_rate_title = '';
         my $res = Q10::Gnuplot->get_param(
@@ -116,6 +118,7 @@ for my $date (sort grep {/\d+/} asc_dir->open->read) {
 set xrange [0.01:1]
 tau = 0.1
 beta = 1
+A = $correlation_max
 fit y_0 + A * exp(-(x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau, beta
 },
             param_file_name => $param_file_name,
@@ -132,37 +135,10 @@ fit y_0 + A * exp(-(x/tau)** beta) '$correlation_dat_file_name' via y_0, A, tau,
         $dls_trial->y($y);
         $dls_trial->fit_wssr($fit_wssr);
         $dls_trial->fit_stdfit($fit_stdfit);
-#         $correlation_plt_file->print (<<EOD);
-# set term postscript
-# set yrange[0:$correlation_max]
-# set logscale x
-# set key outside
-# set output '$correlation_ps_file_name'
-# plot '$correlation_dat_file_name' t '$correlation_title'
-# EOD
-#         $count_rate_plt_file->print (<<EOD);
-# set term postscript
-# set key outside
-# set output '$count_rate_ps_file_name'
-# plot '$count_rate_dat_file_name' w l t '$count_rate_title'
-# EOD
-#         $correlation_plt_file->close;
-#         $count_rate_plt_file->close;
-#         Q10::Gnuplot->run($correlation_plt_file_name);
-#         Q10::Gnuplot->convert($correlation_ps_file_name, $correlation_img_file_name);
-#         Q10::Gnuplot->run($count_rate_plt_file_name);
-#         Q10::Gnuplot->convert($count_rate_ps_file_name, $count_rate_img_file_name);
-#         $graph_html .= sprintf qq{
-# <h3>%s : </h3>
-# <img src="%s" width=600 height=400 />
-# <img src="%s" width=600 height=400 />
-# \n}, $dls_trial_id, $correlation_img_file_name, $count_rate_img_file_name;
     }
 }
 
-# my $graph_html_file = IO::File->new(dir($Bin, 'html')->file('dls.html'), 'w');
-# $graph_html_file->print($graph_html);
-# $graph_html_file->close;
+
 
 
 

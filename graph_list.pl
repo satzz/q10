@@ -15,10 +15,11 @@ my $html_file_name = html_dir->file('trial_list.html');
 my $html_file = IO::File->new($html_file_name, 'w');
 my $html = '';
 
-my @dls_trial = moco('DLSTrial')->search(order => 'relaxation_time asc', where => 'relaxation_time > 0 and cell_id = 14');
+my @dls_trial = moco('DLSTrial')->search(order => 'relaxation_time asc', where => 'relaxation_time > 0');
 $html .= qq{<table border=1>\n};
 $html .= qq{<tr><th>ID</th><th>Temp</th><th>P8[%]</th><th>Correlation Max</th><th>Relx.Time[ms]</th><th>date</th></tr>\n};
 for my $dls_trial (@dls_trial) {
+    $dls_trial->date eq '2009-02-26' or $dls_trial->date eq '2009-02-27' or $dls_trial->date eq '2009-02-28' or next;
     my $dls_trial_id = $dls_trial->dls_trial_id;
     my $img_file_name = img_dir->file("correlation_dls_$dls_trial_id.png");
     $html .= sprintf qq{<tr><td><a href="$img_file_name" target="target">%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n},
