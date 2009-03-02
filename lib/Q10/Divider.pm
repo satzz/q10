@@ -55,6 +55,13 @@ sub run {
         );
         my $index = 0;
         my @dat_total, my @plot;
+        my %phase_transition_hash = (
+            i_to_n   => '1.I->N',
+            i_to_b4  => '2.I->B4',
+            n_to_cry => '3.N->Cry',
+        );
+#         warn $key;
+        @key = sort {$phase_transition_hash{$a} cmp $phase_transition_hash{$b}} keys %phase_transition_hash if $key eq 'phase_transition_type';
         for my $key_val (@key) {
             warn sprintf '  %s = %s', $key, $key_val;
             my $where = join ' AND ', (@where, qq{ $divider = ? }, qq{ $key = ? });
@@ -97,6 +104,8 @@ sub run {
                 $title = sprintf '%s%% P8', $key_val;
             } elsif ($key eq 'temperture') {
                 $title = sprintf '%s deg C', $key_val / 10;
+            } elsif ($key eq 'phase_transition_type') {
+                $title = $phase_transition_hash{$key_val};
             }
             push @plot, sprintf qq{'%s' ind %s %s t '%s'},
                 $dat_file_name,
