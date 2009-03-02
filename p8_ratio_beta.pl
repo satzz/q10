@@ -24,6 +24,7 @@ use Q10::Gnuplot;
 #     $divider1->y_inv      = 1;
     $divider1->logscale   = {y => 1};
 #     $divider1->range      = {x => [1, 2000], y => [0.001, 2]};
+    $divider1->where    = qq{rotation_angle IN (7000,8000,9000,10000,11000,12000,13000,14000)};
     $divider1->run;
     $html .= $divider1->get_html;
     $html_file->print($html);

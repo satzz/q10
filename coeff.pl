@@ -31,6 +31,7 @@ my $plt_file = IO::File->new($plt_file_name, 'w');
     $divider1->x             = 'temperture';
     $divider1->y             = 'b';
     $divider1->with_lines    = 1;
+    $divider1->size       = {x => 1.5};
     $divider1->run;
     $html .= $divider1->get_html;
     $html_file->print($html);

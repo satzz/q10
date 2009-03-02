@@ -22,7 +22,7 @@ use Q10::Gnuplot;
     $divider1->x          = 'correlation_max';
     $divider1->y          = 'relaxation_time';
     $divider1->logscale   = {x => 1,y => 1};
-    $divider1->range      = {x => [0.001, 2]};
+    $divider1->range      = {x => [0.001, 1.3]};
     $divider1->run;
     $html .= $divider1->get_html;
     $html_file->print($html);

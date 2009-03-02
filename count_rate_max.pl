@@ -19,11 +19,12 @@ $divider1->divider = 'sample_angle';
 $divider1->key      = 'p8_ratio';
 $divider1->x        = 'count_rate_max';
 $divider1->y        = 'relaxation_time';
-$divider1->y_inv    = 1;
+# $divider1->y_avg    = 1;
+# $divider1->with_lines    = 1;
 $divider1->logscale = {x => 1, y => 1};
 $divider1->size     = {x => 1.5};
-$divider1->range    = {x => [3, 2000], y => [3, 200]};
-# $divider1->range    = {x => [3, 2000]};
+# $divider1->range    = {x => [3, 2000], y => [3, 200]};
+$divider1->range    = {x => [3, 2000], y => [0.005,0.3]};
 $divider1->where    = qq{p8_ratio < 40};
 $divider1->run;
 

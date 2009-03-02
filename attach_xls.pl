@@ -14,7 +14,7 @@ for my $xls_file_name (grep { /csv/ } xls_dir->open->read) {
     warn $dir;
     mkdir "$dir";
     warn $cell_id;
-    $cell_id = 16 or next;
+    $year == 9 and $month == 3 and $day == 2 or next;
     my $xls_file = xls_dir->file($xls_file_name);
     my ($photo_file_name, $rotation_angle, $sample_angle, $laser_position, $nd_filter_position, $polarizer_angle, $sample_position, $temperture);
     my $flag = 0;
